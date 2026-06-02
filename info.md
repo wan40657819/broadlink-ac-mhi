@@ -1,4 +1,4 @@
-![Logo](docs/media/logo.png)
+![Logo](https://raw.githubusercontent.com/jav1x/broadlink-ac/main/docs/media/logo.png)
 
 # Broadlink AC
 
