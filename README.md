@@ -9,6 +9,19 @@ Control Broadlink-based air conditioners directly from Home Assistant.
 This integration is based on [broadlink_ac_mqtt](https://github.com/liaan/broadlink_ac_mqtt)
 but does not require MQTT.
 
+**Supported devices:** air conditioners controlled through the
+[AC Freedom](https://play.google.com/store/apps/details?id=com.danham.ac)
+application, including the following brands:
+
+- AUX
+- Dunham
+- Rcool
+- Akai
+- Rinnai
+- Kenwood
+- Tornado
+- Ballu
+
 ## Installation
 
 ### Via [HACS](https://hacs.xyz/)

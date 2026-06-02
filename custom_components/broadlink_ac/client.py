@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import socket
 import threading
 import time
 from typing import Any
@@ -72,6 +73,23 @@ class BroadlinkACClient(BroadlinkDeviceProtocol):
             raise
 
         self.logger.debug("Broadlink AC authenticated")
+
+    def reconnect(self) -> bool:
+        """Close the socket and re-authenticate with the device."""
+        self.logger.debug("Reconnecting to Broadlink AC at %s", self.host)
+        try:
+            self.close()
+        except Exception:
+            pass
+
+        self.cs = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.cs.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.cs.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
+
+        try:
+            return self.auth()
+        except BroadlinkACConnectionError:
+            return False
 
     def get_ac_status(self, force_update: bool = False) -> dict[str, Any] | int | bool:
         """Get current AC status."""
