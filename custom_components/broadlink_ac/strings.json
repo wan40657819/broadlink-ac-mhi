@@ -172,6 +172,11 @@
     }
   },
   "entity": {
+    "sensor": {
+      "temperature": {
+        "name": "Temperature"
+      }
+    },
     "switch": {
       "display": {
         "name": "Display"

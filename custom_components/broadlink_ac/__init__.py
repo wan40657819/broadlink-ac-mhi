@@ -15,7 +15,7 @@ from .const import CONF_AREA_ID, DOMAIN
 from .coordinator import BroadlinkACCoordinator, BroadlinkACData, BroadlinkACDeviceData
 from .exceptions import BroadlinkACConnectionError
 
-_PLATFORMS: list[Platform] = [Platform.CLIMATE, Platform.SWITCH]
+_PLATFORMS: list[Platform] = [Platform.CLIMATE, Platform.SENSOR, Platform.SWITCH]
 CONF_DEVICES = "devices"
 
 
