@@ -62,6 +62,15 @@ async def test_climate_has_no_unsupported_features(hass: HomeAssistant) -> None:
     assert not climate.supported_features & ClimateEntityFeature.SWING_MODE
 
 
+async def test_climate_temperature_step_is_one_degree(hass: HomeAssistant) -> None:
+    """Test the target temperature changes in whole degrees."""
+    _, climate = _coordinator(hass)
+
+    assert climate.min_temp == 18.0
+    assert climate.max_temp == 30.0
+    assert climate.target_temperature_step == 1.0
+
+
 async def test_climate_turn_off_calls_switch_off(hass: HomeAssistant) -> None:
     """Test turn_off uses the device power off command."""
     client, climate = _coordinator(hass)

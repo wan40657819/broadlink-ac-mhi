@@ -62,7 +62,7 @@ class BroadlinkACClimate(BroadlinkACEntity, ClimateEntity):
     _attr_fan_modes = SUPPORTED_FAN_MODES
     _attr_min_temp = MIN_TEMPERATURE
     _attr_max_temp = MAX_TEMPERATURE
-    _attr_target_temperature_step = 0.5
+    _attr_target_temperature_step = 1.0
 
     def __init__(self, coordinator: BroadlinkACCoordinator) -> None:
         """Initialize the climate entity."""

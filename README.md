@@ -28,7 +28,7 @@ application, for Mitsubishi Heavy Industries only.
 ## Supported features
 
 - HVAC modes: off, auto, cool, heat, dry, fan only
-- Target temperature
+- Target temperature: 18-30 °C in 1 °C steps
 - Fan modes: auto, low, high, strong
 - Indoor temperature
 - Humidity

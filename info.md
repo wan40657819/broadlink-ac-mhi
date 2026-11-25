@@ -16,7 +16,7 @@ modules directly from Home Assistant, using the MHI SmartHome UDP protocol.
 ## Supported features
 
 - HVAC modes: off, auto, cool, heat, dry, fan only
-- Target temperature: 18-30 °C in 0.5 °C steps
+- Target temperature: 18-30 °C in 1 °C steps
 - Fan modes: auto, low, high, strong
 - Indoor temperature sensor
 - Indoor humidity sensor
