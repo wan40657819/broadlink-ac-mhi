@@ -6,9 +6,9 @@ from unittest.mock import Mock
 
 import pytest
 
-from custom_components.broadlink_ac.const import DOMAIN
-from custom_components.broadlink_ac.coordinator import BroadlinkACCoordinator
-from custom_components.broadlink_ac.exceptions import BroadlinkACConnectionError
+from custom_components.broadlink_ac_mhi.const import DOMAIN
+from custom_components.broadlink_ac_mhi.coordinator import BroadlinkACCoordinator
+from custom_components.broadlink_ac_mhi.exceptions import BroadlinkACConnectionError
 from homeassistant.const import CONF_HOST, CONF_MAC
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError

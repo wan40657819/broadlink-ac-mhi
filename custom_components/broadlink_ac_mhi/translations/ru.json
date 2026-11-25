@@ -1,5 +1,5 @@
 {
-  "title": "Broadlink AC",
+  "title": "Broadlink AC MHI",
   "config": {
     "abort": {
       "already_configured": "Все выбранные устройства уже настроены.",
@@ -19,8 +19,8 @@
         "description": "Начать настройку?"
       },
       "user": {
-        "title": "Broadlink AC",
-        "description": "Выберите найденные кондиционеры Broadlink AC или добавьте устройства вручную ниже.{manual_devices_list}\n{failed_devices}",
+        "title": "Broadlink AC MHI",
+        "description": "Выберите найденные кондиционеры MHI или добавьте устройства вручную ниже.{manual_devices_list}\n{failed_devices}",
         "data": {
           "discovered_devices": "Найденные устройства",
           "host": "IP-адрес",
@@ -87,8 +87,8 @@
   "options": {
     "step": {
       "init": {
-        "title": "Добавить кондиционеры Broadlink AC",
-        "description": "Выберите найденные кондиционеры Broadlink AC или добавьте устройства вручную ниже.{manual_devices_list}\n{failed_devices}",
+        "title": "Добавить кондиционеры Broadlink AC MHI",
+        "description": "Выберите найденные кондиционеры MHI или добавьте устройства вручную ниже.{manual_devices_list}\n{failed_devices}",
         "data": {
           "discovered_devices": "Найденные устройства",
           "host": "IP-адрес",
@@ -177,11 +177,9 @@
     "sensor": {
       "temperature": {
         "name": "Температура"
-      }
-    },
-    "switch": {
-      "display": {
-        "name": "Дисплей"
+      },
+      "humidity": {
+        "name": "Влажность"
       }
     }
   }

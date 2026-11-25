@@ -1,4 +1,4 @@
-"""Test Broadlink AC config flow."""
+"""Test Broadlink AC MHI config flow."""
 
 from __future__ import annotations
 
@@ -13,15 +13,15 @@ from homeassistant.data_entry_flow import FlowResultType
 
 from homeassistant.helpers import area_registry as ar
 
-from custom_components.broadlink_ac.config_flow import (
+from custom_components.broadlink_ac_mhi.config_flow import (
     CONF_ADD_MANUAL,
     CONF_DEVICE_AREAS,
     MENU_MANUAL_ADD_ANOTHER,
     MENU_MANUAL_CONTINUE,
     SECTION_MANUAL_DEVICES,
 )
-from custom_components.broadlink_ac.const import CONF_AREA_ID, DOMAIN
-from custom_components.broadlink_ac.discovery import BroadlinkACDiscoveryDevice
+from custom_components.broadlink_ac_mhi.const import CONF_AREA_ID, DOMAIN
+from custom_components.broadlink_ac_mhi.discovery import BroadlinkACDiscoveryDevice
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 HOST = "192.168.1.100"
@@ -30,10 +30,10 @@ MAC_BYTES = bytes.fromhex("34ea34f75866")
 MAC_BYTES_2 = bytes.fromhex("34ea34f75867")
 MAC_FORMATTED = "34:ea:34:f7:58:66"
 MAC_FORMATTED_2 = "34:ea:34:f7:58:67"
-DISCOVER_AC_DEVICES_PATH = "custom_components.broadlink_ac.config_flow.discover_ac_devices"
-DISCOVER_MAC_PATH = "custom_components.broadlink_ac.config_flow.discover_mac"
+DISCOVER_AC_DEVICES_PATH = "custom_components.broadlink_ac_mhi.config_flow.discover_ac_devices"
+DISCOVER_MAC_PATH = "custom_components.broadlink_ac_mhi.config_flow.discover_mac"
 TEST_CONNECTION_PATH = (
-    "custom_components.broadlink_ac.config_flow._async_test_device_connection"
+    "custom_components.broadlink_ac_mhi.config_flow._async_test_device_connection"
 )
 
 
@@ -97,14 +97,14 @@ def mock_discover_ac_devices():
 def _discovered_device(
     host: str = HOST,
     mac: bytes = MAC_BYTES,
-    name: str = "Broadlink AC",
+    name: str = "MHI AC",
 ) -> BroadlinkACDiscoveryDevice:
     """Return a discovered AC device for config flow tests."""
     return BroadlinkACDiscoveryDevice(
         host=host,
         mac=mac,
         name=name,
-        devtype=0x4E2A,
+        devtype=0x4E97,
     )
 
 
@@ -136,7 +136,7 @@ async def test_user_flow_with_manual_mac(
     result = await _configure_area_step(hass, result["flow_id"], [MAC_FORMATTED])
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == f"Broadlink AC ({HOST})"
+    assert result["title"] == f"Broadlink AC MHI ({HOST})"
     assert result["data"][CONF_HOST] == HOST
     assert result["data"][CONF_MAC] == MAC_FORMATTED
     assert CONF_AREA_ID in result["data"]
@@ -208,7 +208,7 @@ async def test_user_flow_with_discovered_devices(
     )
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Broadlink AC (2 devices)"
+    assert result["title"] == "Broadlink AC MHI (2 devices)"
     assert len(result["data"]["devices"]) == 2
     assert all(CONF_AREA_ID in device for device in result["data"]["devices"])
     assert len(mock_setup_entry.mock_calls) == 1
@@ -258,7 +258,7 @@ async def test_user_flow_with_multiple_manual_devices(
     )
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Broadlink AC (2 devices)"
+    assert result["title"] == "Broadlink AC MHI (2 devices)"
     assert len(result["data"]["devices"]) == 2
     assert all(CONF_AREA_ID in device for device in result["data"]["devices"])
     assert len(mock_setup_entry.mock_calls) == 1
@@ -335,7 +335,7 @@ async def test_invalid_host_cyrillic(hass: HomeAssistant) -> None:
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"],
-        _manual_device_input("фывфыв", "фывфыв"),
+        _manual_device_input("??赲??赲", "??赲??赲"),
     )
 
     assert result["type"] is FlowResultType.FORM
@@ -375,7 +375,7 @@ async def test_invalid_mac_on_manual_device_step(
     assert result["step_id"] == "manual_device"
 
     result = await _configure_manual_device_step(
-        hass, result["flow_id"], HOST, "фывфыв"
+        hass, result["flow_id"], HOST, "??赲??赲"
     )
 
     assert result["type"] is FlowResultType.FORM
@@ -495,3 +495,5 @@ async def test_options_flow_adds_discovered_device(
     assert existing.data["devices"][1][CONF_MAC] == MAC_FORMATTED_2
     assert CONF_AREA_ID in existing.data["devices"][1]
     mock_reload.assert_called_once_with(existing.entry_id)
+
+

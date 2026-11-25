@@ -1,4 +1,4 @@
-"""Base entities for Broadlink AC integration."""
+"""Base entities for the Broadlink AC MHI integration."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from .coordinator import BroadlinkACCoordinator
 
 
 class BroadlinkACEntity(CoordinatorEntity[BroadlinkACCoordinator]):
-    """Base class for Broadlink AC entities."""
+    """Base class for Broadlink AC MHI entities."""
 
     _attr_has_entity_name = True
 
@@ -22,6 +22,7 @@ class BroadlinkACEntity(CoordinatorEntity[BroadlinkACCoordinator]):
         self._attr_device_info = {
             "connections": {(CONNECTION_NETWORK_MAC, self._mac)},
             "identifiers": {(DOMAIN, self._mac_id)},
-            "manufacturer": "Broadlink",
-            "name": f"Broadlink AC ({coordinator.host})",
+            "manufacturer": "Mitsubishi Heavy Industries",
+            "model": "Broadlink OEM-T1",
+            "name": f"Broadlink AC MHI ({coordinator.host})",
         }

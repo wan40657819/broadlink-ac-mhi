@@ -11,9 +11,128 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from .exceptions import BroadlinkACTimeoutError
-from .models import COMMAND_AUTH
 
 _INIT_KEY = "097628343fe99e23765c1513accf8b02"
+
+# BroadLink DNA command words used by the MHI AC.
+COMMAND_AUTH = 0x65
+COMMAND_AC = 0x6A
+COMMAND_AC_STATUS = 0x03EE
+
+# MHI SmartHome AC framing sent over BroadLink DNA command 0x006A.
+MHI_MODE_AUTO = 0
+MHI_MODE_DRY = 1
+MHI_MODE_COOL = 2
+MHI_MODE_FAN = 3
+MHI_MODE_HEAT = 4
+
+MHI_FAN_LOW = 0
+MHI_FAN_HIGH = 1
+MHI_FAN_STRONG = 2
+MHI_FAN_AUTO = 7
+
+MHI_MIN_TEMPERATURE = 18.0
+MHI_MAX_TEMPERATURE = 30.0
+
+_MHI_FRAME_HEADER = b"\xA5\xA5\x5A\x5A\x00\x00\xFF\xFF\x14\x00\x00\x00"
+_MHI_FRAME_PAYLOAD_PREFIX = b"\xA9\x00\x05"
+_MHI_FRAME_PAYLOAD_SUFFIX = b"\xFB" + bytes(5) + b"\xFF\xFF\xFF\xFF" + b"\x0F\x00"
+_MHI_CONTROL_PREFIX = b"\x20\x00"
+_MHI_CONTROL_SUFFIX = bytes(14)
+_MHI_GET_MODE = 0x80
+_MHI_GET_FAN = 0x80
+_MHI_GET_TEMPERATURE = 0x00
+
+
+def mhi_checksum(data: bytes | bytearray) -> int:
+    """Return the MHI additive checksum for the supplied bytes."""
+    return sum(data) & 0xFFFF
+
+
+def mhi_mode_byte(power: bool, mode: int) -> int:
+    """Encode MHI mode byte as 0xA2 | power | (mode index << 2)."""
+    return 0xA2 | (1 if power else 0) | ((mode & 0x07) << 2)
+
+
+def mhi_fan_byte(level: int) -> int:
+    """Encode MHI fan byte as 0x88 | fan level."""
+    return 0x88 | (level & 0x07)
+
+
+def mhi_temperature_byte(temperature: float) -> int:
+    """Encode MHI setpoint byte as 0x80 | degrees Celsius * 2."""
+    return 0x80 | (int(round(temperature * 2)) & 0x7F)
+
+
+def build_mhi_frame(mode: int, fan: int, temperature: int) -> bytes:
+    """Build the 32-byte MHI request frame from encoded state bytes."""
+    payload = bytearray(_MHI_FRAME_PAYLOAD_PREFIX)
+    payload += bytes((mode & 0xFF, fan & 0xFF, temperature & 0xFF))
+    payload += _MHI_FRAME_PAYLOAD_SUFFIX
+    payload += mhi_checksum(payload).to_bytes(2, "big")
+    return _MHI_FRAME_HEADER + bytes(payload)
+
+
+def build_mhi_get_frame() -> bytes:
+    """Build the 32-byte MHI status-query frame used by the app."""
+    return build_mhi_frame(_MHI_GET_MODE, _MHI_GET_FAN, _MHI_GET_TEMPERATURE)
+
+
+def build_mhi_control_body(frame: bytes) -> bytes:
+    """Wrap a 32-byte MHI frame in the 48-byte 0x006A request body."""
+    if len(frame) != 32:
+        raise ValueError("MHI frame must be 32 bytes")
+    return _MHI_CONTROL_PREFIX + frame + _MHI_CONTROL_SUFFIX
+
+
+def build_mhi_get_body() -> bytes:
+    """Build the 48-byte 0x006A request body that queries AC state."""
+    return build_mhi_control_body(build_mhi_get_frame())
+
+
+def build_mhi_set_body(
+    *,
+    power: bool,
+    mode: int,
+    fan: int,
+    temperature: float,
+) -> bytes:
+    """Build the 48-byte 0x006A request body that sets AC state."""
+    if not MHI_MIN_TEMPERATURE <= temperature <= MHI_MAX_TEMPERATURE:
+        raise ValueError(
+            f"MHI temperature must be {MHI_MIN_TEMPERATURE:g}.."
+            f"{MHI_MAX_TEMPERATURE:g} C"
+        )
+    frame = build_mhi_frame(
+        mhi_mode_byte(power, mode),
+        mhi_fan_byte(fan),
+        mhi_temperature_byte(temperature),
+    )
+    return build_mhi_control_body(frame)
+
+
+def parse_mhi_status(body: bytes | bytearray) -> dict[str, int | float | bool] | None:
+    """Parse a 0x03EE response body, returning None when it is not valid."""
+    if len(body) < 22 or body[0:2] != b"\x14\x00":
+        return None
+
+    status = bytes(body[2:22])
+    if mhi_checksum(status[:18]) != int.from_bytes(status[18:20], "big"):
+        return None
+
+    return {
+        "mode_byte": status[3],
+        "power": bool(status[3] & 0x01),
+        "mode": (status[3] >> 2) & 0x07,
+        "fan_byte": status[4],
+        "fan": status[4] & 0x07,
+        "temperature_byte": status[5],
+        "temperature": (status[5] & 0x7F) / 2,
+        "indoor_raw": status[6],
+        "error": status[7],
+        "humidity": status[8],
+        "outdoor_raw": status[9],
+    }
 
 
 class BroadlinkDeviceProtocol:

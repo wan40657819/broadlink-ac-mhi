@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="docs/media/logo.png" alt="Broadlink AC" width="200">
+  <img src="docs/media/logo.png" alt="Broadlink AC MHI" width="200">
 </p>
 
-# Broadlink AC
+# Broadlink AC MHI
+
+Fork from Broadlink AC and built for Mitsubishi Heavy Industries with Air+空氣管家 app only. Test on SRK53MWKH1 only.
 
 Control Broadlink-based air conditioners directly from Home Assistant.
 
@@ -10,17 +12,8 @@ This integration is based on [broadlink_ac_mqtt](https://github.com/liaan/broadl
 but does not require MQTT.
 
 **Supported devices:** air conditioners controlled through the
-[AC Freedom](https://play.google.com/store/apps/details?id=com.danham.ac)
-application, including the following brands:
-
-- AUX
-- Dunham
-- Rcool
-- Akai
-- Rinnai
-- Kenwood
-- Tornado
-- Ballu
+[Air+空氣管家](https://play.google.com/store/apps/details?id=com.mitsubishiheavyindustries_AIR_ch.smarthome&hl=zh)
+application, for Mitsubishi Heavy Industries only.
 
 ## Installation
 
@@ -30,27 +23,27 @@ application, including the following brands:
 
 ## Configuration
 
-<a href="https://my.home-assistant.io/redirect/config_flow_start?domain=broadlink_ac" target="_blank"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up a new integration." /></a>
+<a href="https://my.home-assistant.io/redirect/config_flow_start?domain=broadlink_ac_mhi" target="_blank"><img src="https://my.home-assistant.io/badges/config_flow_start.svg" alt="Open your Home Assistant instance and start setting up a new integration." /></a>
 
 ## Supported features
 
 - HVAC modes: off, auto, cool, heat, dry, fan only
 - Target temperature
-- Fan modes: auto, low, medium, high, turbo, mute
-- Vertical swing modes: top, middle1, middle2, middle3, bottom, swing, auto
-- Display switch
+- Fan modes: auto, low, high, strong
+- Indoor temperature
+- Humidity
 
 ### Manual install
 
-Copy the `custom_components/broadlink_ac` directory from this repository into
-your Home Assistant `config/custom_components/broadlink_ac` directory, restart
+Copy the `custom_components/broadlink_ac_mhi` directory from this repository into
+your Home Assistant `config/custom_components/broadlink_ac_mhi` directory, restart
 Home Assistant, then use the **Add integration** button or add it from the UI.
 
 ## Configuration
 
 1. Restart Home Assistant.
 2. Open **Settings → [Integrations](https://my.home-assistant.io/redirect/integrations/)**.
-3. Add **Broadlink AC**.
+3. Add **Broadlink AC MHI**.
 4. Enter one or more local IP addresses of the air conditioners. Separate
    multiple addresses with commas, spaces, or new lines.
 
@@ -62,7 +55,7 @@ devices one at a time and enter the MAC manually in one of these formats:
 - `34:EA:34:F7:58:66`
 - `34ea34f75866`
 
-To add more air conditioners later, open the configured **Broadlink AC**
+To add more air conditioners later, open the configured **Broadlink AC MHI**
 integration, choose **Configure**, and enter one or more additional IP
 addresses.
 
@@ -72,4 +65,14 @@ This integration does not register custom Home Assistant actions (services).
 Control the air conditioner through the created entities:
 
 - `climate.*` for HVAC control
-- `switch.*` for the front panel display
+- `sensor.*` for indoor temperature and humidity
+
+## Protocol
+
+[Protocol.md](Protocol.md) — MHI UDP protocol analysis from packet captures and
+reverse engineering of the
+[Air+空氣管家](https://play.google.com/store/apps/details?id=com.mitsubishiheavyindustries_AIR_ch.smarthome&hl=zh)
+Android app.
+
+## Credit
+Frok form [broadlink-ac](https://github.com/Jav1x/broadlink-ac) by Jav1x

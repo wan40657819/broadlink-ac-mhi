@@ -28,7 +28,7 @@ jobs:
           from pathlib import Path
 
           version = "${{ steps.version.outputs.version }}"
-          manifest_path = Path("custom_components/broadlink_ac/manifest.json")
+          manifest_path = Path("custom_components/broadlink_ac_mhi/manifest.json")
           manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
           manifest["version"] = version
           manifest_path.write_text(
@@ -39,10 +39,10 @@ jobs:
 
       - name: Create integration zip
         run: |
-          cd custom_components/broadlink_ac
-          zip -r ../../broadlink_ac.zip ./ -x "**/__pycache__/*" "**/*.pyc"
+          cd custom_components/broadlink_ac_mhi
+          zip -r ../../broadlink_ac_mhi.zip ./ -x "**/__pycache__/*" "**/*.pyc"
 
       - name: Upload zip to release
         uses: softprops/action-gh-release@v2
         with:
-          files: broadlink_ac.zip
+          files: broadlink_ac_mhi.zip

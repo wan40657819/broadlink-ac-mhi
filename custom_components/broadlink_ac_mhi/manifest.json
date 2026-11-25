@@ -1,0 +1,14 @@
+{
+  "domain": "broadlink_ac_mhi",
+  "name": "Broadlink AC MHI",
+  "codeowners": ["@wan40657819"],
+  "config_flow": true,
+  "documentation": "https://github.com/wan40657819/broadlink-ac-mhi",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/wan40657819/broadlink-ac-mhi/issues",
+  "parallel_updates": 1,
+  "quality_scale": "bronze",
+  "requirements": ["cryptography>=42.0.0"],
+  "version": "1.0.0"
+}

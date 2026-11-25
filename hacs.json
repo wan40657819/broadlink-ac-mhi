@@ -1,8 +1,8 @@
 {
-  "name": "Broadlink AC",
+  "name": "Broadlink AC MHI",
   "render_readme": false,
   "homeassistant": "2025.12.0",
   "zip_release": true,
-  "filename": "broadlink_ac.zip",
+  "filename": "broadlink_ac_mhi.zip",
   "hide_default_branch": true
 }

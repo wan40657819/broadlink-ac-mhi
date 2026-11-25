@@ -8,4 +8,9 @@
 /venv
 *.zip
 __pycache__/
-
+decompile apk1/
+decompile apk2/
+decompile apk3/
+maxm_broadlink-ac/
+tests/
+mhi_protocol.md

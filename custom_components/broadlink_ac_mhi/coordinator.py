@@ -1,4 +1,4 @@
-"""Coordinator for Broadlink AC integration."""
+"""Coordinator for the Broadlink AC MHI integration."""
 
 from __future__ import annotations
 
@@ -25,7 +25,7 @@ _UNAVAILABLE_AFTER_FAILURES = 10
 
 @dataclass
 class BroadlinkACDeviceData:
-    """Runtime data for one Broadlink AC device."""
+    """Runtime data for one Broadlink AC MHI device."""
 
     client: BroadlinkACClient
     coordinator: BroadlinkACCoordinator
@@ -33,13 +33,13 @@ class BroadlinkACDeviceData:
 
 @dataclass
 class BroadlinkACData:
-    """Runtime data for a Broadlink AC config entry."""
+    """Runtime data for a Broadlink AC MHI config entry."""
 
     devices: list[BroadlinkACDeviceData]
 
 
 class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
-    """Coordinate updates for one Broadlink AC device."""
+    """Coordinate updates for one Broadlink AC MHI device."""
 
     config_entry: ConfigEntry
 
@@ -77,7 +77,7 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             if error_msg != self._last_error_msg:
                 self._last_error_msg = error_msg
                 _LOGGER.warning(
-                    "Failed to communicate with Broadlink AC at %s "
+                    "Failed to communicate with Broadlink AC MHI at %s "
                     "(failure #%d): %s",
                     self.host,
                     self._consecutive_failures,
@@ -85,7 +85,7 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
             else:
                 _LOGGER.debug(
-                    "Still unable to reach Broadlink AC at %s "
+                    "Still unable to reach Broadlink AC MHI at %s "
                     "(failure #%d, unchanged): %s",
                     self.host,
                     self._consecutive_failures,
@@ -98,7 +98,7 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 )
                 if reconnected:
                     _LOGGER.info(
-                        "Broadlink AC at %s reconnected", self.host
+                        "Broadlink AC MHI at %s reconnected", self.host
                     )
                     self._consecutive_failures = 0
                     self._last_error_msg = None
@@ -106,24 +106,24 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                         return self.data
                 else:
                     _LOGGER.warning(
-                        "Broadlink AC at %s reconnection attempt failed", self.host
+                        "Broadlink AC MHI at %s reconnection attempt failed", self.host
                     )
 
             if self._consecutive_failures > _UNAVAILABLE_AFTER_FAILURES:
                 raise UpdateFailed(
-                    f"Broadlink AC at {self.host} unreachable for "
+                    f"Broadlink AC MHI at {self.host} unreachable for "
                     f"{self._consecutive_failures} consecutive attempts"
                 ) from err
 
             if self.data is not None:
                 return self.data
             raise UpdateFailed(
-                f"Failed to communicate with Broadlink AC: {err}"
+                f"Failed to communicate with Broadlink AC MHI: {err}"
             ) from err
 
         if self._consecutive_failures > 0:
             _LOGGER.info(
-                "Broadlink AC at %s is back online after %d failures",
+                "Broadlink AC MHI at %s is back online after %d failures",
                 self.host,
                 self._consecutive_failures,
             )
@@ -131,7 +131,7 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._last_error_msg = None
 
         if not isinstance(status, dict):
-            raise UpdateFailed("Failed to get Broadlink AC status")
+            raise UpdateFailed("Failed to get Broadlink AC MHI status")
 
         return status
 
@@ -141,7 +141,7 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             result = await self.hass.async_add_executor_job(func, *args)
         except BroadlinkACError as err:
             raise HomeAssistantError(
-                f"Failed to communicate with Broadlink AC: {err}"
+                f"Failed to communicate with Broadlink AC MHI: {err}"
             ) from err
 
         if isinstance(result, dict):
@@ -150,3 +150,4 @@ class BroadlinkACCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             await self.async_request_refresh()
 
         return result
+

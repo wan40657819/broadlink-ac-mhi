@@ -147,7 +147,7 @@ def _entry_devices(entry: config_entries.ConfigEntry) -> list[dict[str, str]]:
 
 
 def _test_device_connection(host: str, mac: str) -> None:
-    """Verify that a Broadlink AC device accepts a connection."""
+    """Verify that a Broadlink AC MHI device accepts a connection."""
     mac_bytes = bytes.fromhex(mac.replace(":", ""))
     client = BroadlinkACClient(host=(host, 80), mac=mac_bytes, update_interval=0)
     client.close()
@@ -552,7 +552,7 @@ class _BroadlinkACFlowMixin:
 
 
 class BroadlinkACConfigFlow(_BroadlinkACFlowMixin, config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Broadlink AC."""
+    """Handle a config flow for Broadlink AC MHI."""
 
     VERSION = 1
 
@@ -638,12 +638,12 @@ class BroadlinkACConfigFlow(_BroadlinkACFlowMixin, config_entries.ConfigFlow, do
     def _entry_title(self, devices: list[dict[str, str]]) -> str:
         """Return a title for a config entry."""
         if len(devices) == 1:
-            return f"Broadlink AC ({devices[0][CONF_HOST]})"
-        return f"Broadlink AC ({len(devices)} devices)"
+            return f"Broadlink AC MHI ({devices[0][CONF_HOST]})"
+        return f"Broadlink AC MHI ({len(devices)} devices)"
 
 
 class BroadlinkACOptionsFlow(_BroadlinkACFlowMixin, config_entries.OptionsFlow):
-    """Handle options for Broadlink AC."""
+    """Handle options for Broadlink AC MHI."""
 
     def __init__(self) -> None:
         """Initialize the options flow."""

@@ -1,4 +1,4 @@
-"""Device discovery for Broadlink AC devices."""
+"""Device discovery for MHI air conditioners on Broadlink OEM-T1 modules."""
 
 from __future__ import annotations
 
@@ -10,12 +10,13 @@ import time
 from .client import BroadlinkACClient
 from .protocol import BroadlinkDeviceProtocol
 
-DANHAM_BUSH_DEVICE_TYPE = 0x4E2A
+# Broadlink OEM-T1 module used by the MHI SmartHome app (device type 20119).
+MHI_AC_DEVICE_TYPE = 0x4E97
 
 
 @dataclass(frozen=True)
 class BroadlinkACDiscoveryDevice:
-    """A discovered Broadlink AC device."""
+    """A discovered MHI air conditioner."""
 
     host: str
     mac: bytes
@@ -101,7 +102,7 @@ def _device_from_response(
         name = mac.hex()
     cloud = bool(responsepacket[-1])
 
-    if devtype == DANHAM_BUSH_DEVICE_TYPE:
+    if devtype == MHI_AC_DEVICE_TYPE:
         return BroadlinkACClient(
             host=host,
             mac=mac,
@@ -127,7 +128,7 @@ def _discovery_device_from_response(
     """Parse a Broadlink discovery response without opening a device client."""
     responsepacket = bytearray(response[0])
     devtype = responsepacket[0x34] | responsepacket[0x35] << 8
-    if devtype != DANHAM_BUSH_DEVICE_TYPE:
+    if devtype != MHI_AC_DEVICE_TYPE:
         return None
 
     mac = bytes(responsepacket[0x3A:0x40][::-1])
@@ -146,7 +147,7 @@ def _discovery_device_from_response(
 def discover_ac_devices(
     timeout: float = 5, bind_to_ip: str | None = None
 ) -> list[BroadlinkACDiscoveryDevice]:
-    """Discover Broadlink AC devices on the local network."""
+    """Discover MHI air conditioners on the local network."""
     cs, bind_to_ip = _open_discovery_socket(bind_to_ip)
 
     try:
