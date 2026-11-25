@@ -2,8 +2,7 @@
 
 This is the consolidated reference for the confirmed local UDP control path of
 the Mitsubishi Heavy Industries air conditioner controlled by the BroadLink
-OEM-T1 module (device type `0x4E97` / `20119`). The BroadLink cloud fallback
-and the full source audit are documented in [`mhi_protocol.md`](mhi_protocol.md).
+OEM-T1 module (device type `0x4E97` / `20119`). 
 
 Evidence is labelled so that confirmed wire behaviour is not confused with
 assumptions.
