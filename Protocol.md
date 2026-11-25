@@ -248,12 +248,3 @@ body, so wiring these builders into the climate entity remains pending.
 Do not run high-rate command sweeps against the appliance. Earlier burst testing
 left the module unresponsive until a physical power cycle.
 
-## Supporting artifacts
-
-- APK/native analysis: `decompile apk1/`, `decompile apk2/`, `decompile apk3/`
-- Local control capture: `tests/PCAPdroid_20261124_02_55_59.pcap`
-- Mode/sensor capture: `tests/PCAPdroid_20261124_03_24_53.pcap`
-- Historical log, source audit and cloud protocol: `mhi_protocol.md`
-- Manual test tools: `tests/bruteforce_cmd.py`, `tests/timing_test.py`,
-  `tests/burst_calibration.py`, `tests/discover_ac.py`, `tests/auth_ac.py`
-- Alternative integration: `maxm_broadlink-ac/broadlink-ac-master/`
